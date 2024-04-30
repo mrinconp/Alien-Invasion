@@ -14,9 +14,15 @@ class AlienInvasion():
     def run_game(self):
         """Se inicia el loop principal con un While"""
         while True:
-            #Eventos teclado y mouse
+            #Event loop para registrar eventos(acciones) del teclado y mouse
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    sys.exit
+                    sys.exit()
             
+            #Actualizar y hacer visible la pantalla
             pygame.display.flip()
+
+if __name__ == '__main__':
+    #Hacer una instancia con la clase y correr el juego con el metodo
+    ai = AlienInvasion()
+    ai.run_game()
