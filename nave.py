@@ -9,7 +9,8 @@ class Nave():
         self.screen_rect = ai_game.screen.get_rect() #rectangulo de la pantalla
 
         #Cargar la imagen de la nave y su rectangulo
-        self.image = pygame.image.load('recursos/Spaceship.bmp')
+        self.raw = pygame.image.load('recursos/Spaceship.bmp')
+        self.image = pygame.transform.scale_by(self.raw, 0.1)
         self.rect = self.image.get_rect()
 
         self.rect.midbottom = self.screen_rect.midbottom
