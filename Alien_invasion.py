@@ -1,15 +1,17 @@
 import sys
 import pygame
+from settings import Config
 
 class AlienInvasion():
     """Características del juego y comportamiento"""
     def __init__(self):
         #Iniciar el juego y crear los recursos
         pygame.init()
-        #Tamaño de la ventana
-        self.screen = pygame.display.set_mode((1200, 800))
-        #Establecer color de la ventana.
-        self.bg_color = (230, 230, 230)
+        #Configuración general de la pantalla
+        self.config = Config()
+
+        self.pantalla = pygame.display.set_mode(self.config.altura_pantalla, self.config.ancho_pantalla)
+
         #Nombre de la ventana
         pygame.display.set_caption("Alien Invasion")
 
@@ -17,12 +19,12 @@ class AlienInvasion():
         """Se inicia el loop principal con un While"""
         while True:
             #Event loop para registrar eventos(acciones) del teclado y mouse
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
+            for evento in pygame.event.get():
+                if evento.type == pygame.QUIT:
                     sys.exit()
             
             #Aplicar color en cada iteración
-            self.screen.fill(self.bg_color)
+            self.pantalla.fill(self.config.bg_color)
 
             #Actualizar y hacer visible la pantalla
             pygame.display.flip()
