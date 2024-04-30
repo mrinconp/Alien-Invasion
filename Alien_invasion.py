@@ -8,6 +8,8 @@ class AlienInvasion():
         pygame.init()
         #Tamaño de la ventana
         self.screen = pygame.display.set_mode((1200, 800))
+        #Establecer color de la ventana.
+        self.bg_color = (230, 230, 230)
         #Nombre de la ventana
         pygame.display.set_caption("Alien Invasion")
 
@@ -19,6 +21,9 @@ class AlienInvasion():
                 if event.type == pygame.QUIT:
                     sys.exit()
             
+            #Aplicar color en cada iteración
+            self.screen.fill(self.bg_color)
+
             #Actualizar y hacer visible la pantalla
             pygame.display.flip()
 
