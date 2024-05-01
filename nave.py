@@ -6,6 +6,7 @@ class Nave():
     def __init__(self, ai_game):
         """Crear la nave y posicionarla"""
         self.screen = ai_game.screen
+        self.settings = ai_game.config
         self.screen_rect = ai_game.screen.get_rect() #rectangulo de la pantalla
 
         #Cargar la imagen de la nave y su rectangulo
@@ -15,6 +16,9 @@ class Nave():
 
         self.rect.midbottom = self.screen_rect.midbottom
 
+        # Store a decimal value for the ship's horizontal position.
+        self.x = float(self.rect.x)
+
         #Flag de movimiento
         self.moving_right = False
         self.moving_left = False
@@ -22,9 +26,11 @@ class Nave():
     def update(self):
         #Actualizar la posicion de la nave basado en la bandera de movimiento
         if self.moving_right:
-            self.rect.x += 1
+            self.x += self.settings.nave_speed
         if self.moving_left:
-            self.rect.x -= 1
+            self.x -= self.settings.nave_speed
+
+        self.rect.x = self.x
 
     def blitme(self):
         """Dibujar la nave en su posición"""
