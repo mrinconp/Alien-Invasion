@@ -11,7 +11,11 @@ class AlienInvasion():
         #Configuración general de la screen
         self.config = Config()
 
-        self.screen = pygame.display.set_mode((self.config.screen_width, self.config.screen_height))
+        self.screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+        
+        #Aunque el código corre con FULLSCREEN, es bueno guardar como atributos la altura y ancho de la pantalla en caso de ser necesario
+        self.config.screen_width = self.screen.get_rect().width
+        self.config.screen_height = self.screen.get_rect().height
 
         #Nombre de la ventana
         pygame.display.set_caption("Alien Invasion")
@@ -39,16 +43,23 @@ class AlienInvasion():
                 if event.type == pygame.QUIT:
                     sys.exit()
                 elif event.type ==pygame.KEYDOWN:
-                    if event.key == pygame.K_RIGHT:
-                        #Mover la nave a la derecha:
-                        self.nave.moving_right = True
-                    elif event.key == pygame.K_LEFT:
-                        self.nave.moving_left = True
+                    self._check_keydown_events(event)
                 elif event.type == pygame.KEYUP:
-                    if event.key == pygame.K_RIGHT:
-                        self.nave.moving_right = False
-                    elif event.key == pygame.K_LEFT:
-                        self.nave.moving_left = False
+                    self._check_keyup_events(event)
+
+    def _check_keydown_events(self, event):
+        if event.key == pygame.K_RIGHT:
+            self.nave.moving_right = True
+        elif event.key == pygame.K_LEFT:
+            self.nave.moving_left = True
+        elif event.key == pygame.K_q:
+            sys.exit()
+
+    def _check_keyup_events(self, event):
+        if event.key == pygame.K_RIGHT:
+            self.nave.moving_right = False
+        elif event.key == pygame.K_LEFT:
+            self.nave.moving_left = False
 
 
 if __name__ == '__main__':

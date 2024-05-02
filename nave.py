@@ -25,9 +25,14 @@ class Nave():
 
     def update(self):
         #Actualizar la posicion de la nave basado en la bandera de movimiento
-        if self.moving_right:
+
+        #Revisar si está activa la bandera de movimiento y que el extremo derecho del rectángulo de la nave no sea mayor que el de la pantalla
+        if self.moving_right and self.rect.right < self.screen_rect.right:
             self.x += self.settings.nave_speed
-        if self.moving_left:
+        
+        #Revisar si está activa la bandera de movimiento y que el extremo izquierdo del rectángulo de la nave sea mayor a 0 
+        #(recordar que las coordenadas tienen origen en el extremo sup izq de la pantalla)
+        if self.moving_left and self.rect.left > 0:
             self.x -= self.settings.nave_speed
 
         self.rect.x = self.x
