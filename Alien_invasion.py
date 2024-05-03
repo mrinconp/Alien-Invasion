@@ -2,6 +2,7 @@ import sys
 import pygame
 from settings import Config
 from nave import Nave
+from bullet import Bala
 
 class AlienInvasion():
     """Características del juego y comportamiento"""
@@ -11,28 +12,35 @@ class AlienInvasion():
         #Configuración general de la screen
         self.config = Config()
 
-        self.screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+        #self.screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
         
         #Aunque el código corre con FULLSCREEN, es bueno guardar como atributos la altura y ancho de la pantalla en caso de ser necesario
-        self.config.screen_width = self.screen.get_rect().width
-        self.config.screen_height = self.screen.get_rect().height
+        #self.config.screen_width = self.screen.get_rect().width
+        #self.config.screen_height = self.screen.get_rect().height
 
+        self.screen = pygame.display.set_mode((1200,800))
         #Nombre de la ventana
         pygame.display.set_caption("Alien Invasion")
 
         self.nave = Nave(self)
+
+        self.balas = pygame.sprite.Group()
 
     def run_game(self):
         """Se inicia el loop principal con un While"""
         while True:
             self._check_events()
             self.nave.update()
+            self._update_balas()
             self._update_screen()
-            
+             
     def _update_screen(self):
         #Aplicar color en cada iteración
         self.screen.fill(self.config.bg_color)
         self.nave.blitme()
+
+        for bala in self.balas.sprites():
+            bala.draw_bala()
 
         #Actualizar y hacer visible la pantalla
         pygame.display.flip()
@@ -54,12 +62,29 @@ class AlienInvasion():
             self.nave.moving_left = True
         elif event.key == pygame.K_q:
             sys.exit()
+        elif event.key == pygame.K_SPACE:
+            self._disparar_bala()
 
     def _check_keyup_events(self, event):
         if event.key == pygame.K_RIGHT:
             self.nave.moving_right = False
         elif event.key == pygame.K_LEFT:
             self.nave.moving_left = False
+
+
+    def _disparar_bala(self):
+        if len(self.balas) < self.config.balas_max:
+            nueva_bala = Bala(self)
+            self.balas.add(nueva_bala)  
+
+    def _update_balas(self):
+        """Actualizar posición de las balas y eliminar las que salen de la pantalla"""
+        #Actualizar posición
+        self.balas.update()
+        #Quitar balas que salen de la pantalla
+        for bala in self.balas.copy():
+            if bala.rect.bottom <= 0:
+                self.balas.remove(bala)
 
 
 if __name__ == '__main__':
