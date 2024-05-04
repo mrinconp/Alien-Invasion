@@ -95,8 +95,24 @@ class AlienInvasion():
 
     def _crear_manada(self):
         """Manada de aliens"""
-        #Hacer un alien
+        #Alien de referencia para medidas, no para incluir en la manada
         alien = Alien(self)
+        
+        alien_width = alien.rect.width
+        espacio_disponible_x = self.config.screen_width - (2*alien_width)
+        numero_aliens_x = espacio_disponible_x // (2*alien_width)
+    
+        #Crear fila
+        for alien_number in range(numero_aliens_x):
+            #Crear un alien y posicionarlo
+            self._create_alien(alien_number)
+        
+
+    def _create_alien(self, alien_number):
+        alien = Alien(self)
+        alien_width = alien.rect.width
+        alien.x = alien_width + 2*alien_width*alien_number
+        alien.rect.x = alien.x
         self.aliens.add(alien)
 
 if __name__ == '__main__':
