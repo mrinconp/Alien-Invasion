@@ -3,6 +3,7 @@ import pygame
 from settings import Config
 from nave import Nave
 from bullet import Bala
+from alien import Alien
 
 class AlienInvasion():
     """Características del juego y comportamiento"""
@@ -26,6 +27,10 @@ class AlienInvasion():
 
         self.balas = pygame.sprite.Group()
 
+        self.aliens = pygame.sprite.Group()
+
+        self._crear_manada()
+
     def run_game(self):
         """Se inicia el loop principal con un While"""
         while True:
@@ -41,6 +46,8 @@ class AlienInvasion():
 
         for bala in self.balas.sprites():
             bala.draw_bala()
+        
+        self.aliens.draw(self.screen)
 
         #Actualizar y hacer visible la pantalla
         pygame.display.flip()
@@ -86,6 +93,11 @@ class AlienInvasion():
             if bala.rect.bottom <= 0:
                 self.balas.remove(bala)
 
+    def _crear_manada(self):
+        """Manada de aliens"""
+        #Hacer un alien
+        alien = Alien(self)
+        self.aliens.add(alien)
 
 if __name__ == '__main__':
     #Hacer una instancia con la clase y correr el juego con el metodo
