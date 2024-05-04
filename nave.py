@@ -11,7 +11,7 @@ class Nave():
 
         #Cargar la imagen de la nave y su rectangulo
         self.raw = pygame.image.load('recursos/nave1.bmp')
-        self.image = pygame.transform.scale_by(self.raw, 0.2)
+        self.image = pygame.transform.scale_by(self.raw, 0.15)
         self.rect = self.image.get_rect()
 
         self.rect.midbottom = self.screen_rect.midbottom

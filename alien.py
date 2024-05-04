@@ -13,7 +13,7 @@ class Alien(Sprite):
 
         #Cargar la imagen de la nave y su rectangulo
         self.raw = pygame.image.load('recursos/alien1.bmp')
-        self.image = pygame.transform.scale_by(self.raw, 0.15)
+        self.image = pygame.transform.scale_by(self.raw, 0.1)
         self.rect = self.image.get_rect()
 
         #Iniciar cada alien arriba a la izquierda de la pantalla
