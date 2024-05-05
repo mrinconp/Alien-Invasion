@@ -1,9 +1,11 @@
 import sys
 import pygame
+import random
 from settings import Config
 from nave import Nave
 from bullet import Bala
 from alien import Alien
+from star import Star
 
 class AlienInvasion():
     """Características del juego y comportamiento"""
@@ -23,13 +25,19 @@ class AlienInvasion():
         #Nombre de la ventana
         pygame.display.set_caption("Alien Invasion")
 
+        #Nave
         self.nave = Nave(self)
 
+        #Balas
         self.balas = pygame.sprite.Group()
 
+        #Aliens
         self.aliens = pygame.sprite.Group()
-
         self._crear_manada()
+
+        #Estrellas
+        self.stars = pygame.sprite.Group()
+        self._create_stars()
 
     def run_game(self):
         """Se inicia el loop principal con un While"""
@@ -42,11 +50,14 @@ class AlienInvasion():
     def _update_screen(self):
         #Aplicar color en cada iteración
         self.screen.fill(self.config.bg_color)
+        #Dibujar estrellas
+        self.stars.draw(self.screen)
+        #Dibujar nave
         self.nave.blitme()
-
+        #Dibujar balas
         for bala in self.balas.sprites():
             bala.draw_bala()
-        
+        #Dibujar aliens
         self.aliens.draw(self.screen)
 
         #Actualizar y hacer visible la pantalla
@@ -123,6 +134,24 @@ class AlienInvasion():
         alien.rect.x = alien_width + 2*alien_width*alien_number
         alien.rect.y = alien_height + 2*alien_height*row_number
         self.aliens.add(alien)
+
+
+    def _create_stars(self):
+        """Crear estrellas de forma aleatoria"""
+        x_values = random.sample(range(self.config.screen_width), self.config.cantidad_estrellas)
+        y_values = random.sample(range(self.config.screen_height), self.config.cantidad_estrellas)
+
+        for i in range(self.config.cantidad_estrellas):
+            x = x_values[i]
+            y = y_values[i]
+            self._create_star(x, y)
+
+    def _create_star(self, x, y):
+        star = Star(self)
+
+        star.rect.x = x
+        star.rect.y = y
+        self.stars.add(star)
 
 if __name__ == '__main__':
     #Hacer una instancia con la clase y correr el juego con el metodo

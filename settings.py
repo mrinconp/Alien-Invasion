@@ -6,7 +6,7 @@ class Config():
         #Configuraciones de pantalla:
         self.screen_width = 1200
         self.screen_height = 800
-        self.bg_color = (230,230,230)
+        self.bg_color = (0,0,0)
 
         #Velocidad nave
         self.nave_speed = 1.5
@@ -17,3 +17,6 @@ class Config():
         self.bala_height = 15
         self.bala_color = (60,60,60)
         self.balas_max = 3
+
+        #Config estrellas
+        self.cantidad_estrellas = 200
