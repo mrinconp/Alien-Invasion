@@ -18,7 +18,7 @@ class Config():
         self.manada_direction = 1
 
         #Config balas
-        self.bala_speed = 1.0
+        self.bala_speed = 1.5
         self.bala_width = 3
         self.bala_height = 15
         self.bala_color = (60,60,60)

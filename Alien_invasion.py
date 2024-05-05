@@ -105,6 +105,19 @@ class AlienInvasion():
             if bala.rect.bottom <= 0:
                 self.balas.remove(bala)
 
+        self._check_colisiones_bala_alien()
+        
+    def _check_colisiones_bala_alien(self):
+        #Revisar colisiones y borrar alien dado el caso
+            #Los dos argumentos True borran los elementos que colisionan
+        collisions = pygame.sprite.groupcollide(
+            self.balas, self.aliens, True, True)
+        
+        if not self.aliens:
+            #Eliminar balas existentes y crear nueva manada de aliens
+            self.balas.empty()
+            self._crear_manada()
+
     def _update_aliens(self):
         self._check_manada_bordes()
         self.aliens.update()
