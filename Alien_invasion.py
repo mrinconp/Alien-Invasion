@@ -113,7 +113,6 @@ class AlienInvasion():
         """Manada de aliens"""
         #Alien de referencia para medidas, no para incluir en la manada
         alien = Alien(self)
-        
         alien_width, alien_height = alien.rect.size 
         espacio_disponible_x = self.config.screen_width - (2*alien_width)
         numero_aliens_x = espacio_disponible_x // (2*alien_width)
@@ -136,7 +135,8 @@ class AlienInvasion():
         alien_width, alien_height = alien.rect.size
 
         #Coordenadas del rectángulo donde se va a posicionar el alien
-        alien.rect.x = alien_width + 2*alien_width*alien_number
+        alien.x = alien_width + 2*alien_width*alien_number
+        alien.rect.x = alien.x
         alien.rect.y = alien_height + 2*alien_height*row_number
         self.aliens.add(alien)
 
