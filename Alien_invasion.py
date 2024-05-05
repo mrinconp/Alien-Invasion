@@ -45,6 +45,7 @@ class AlienInvasion():
             self._check_events()
             self.nave.update()
             self._update_balas()
+            self._update_aliens()
             self._update_screen()
              
     def _update_screen(self):
@@ -104,6 +105,10 @@ class AlienInvasion():
             if bala.rect.bottom <= 0:
                 self.balas.remove(bala)
 
+    def _update_aliens(self):
+        self._check_manada_bordes()
+        self.aliens.update()
+
     def _crear_manada(self):
         """Manada de aliens"""
         #Alien de referencia para medidas, no para incluir en la manada
@@ -152,6 +157,18 @@ class AlienInvasion():
         star.rect.x = x
         star.rect.y = y
         self.stars.add(star)
+
+    def _check_manada_bordes(self):
+        for alien in self.aliens.sprites():
+            if alien.check_bordes():
+                self._cambiar_direccion()
+                break
+
+    def _cambiar_direccion(self):
+        """Bajar la manada y cambiar la direccion"""
+        for alien in self.aliens.sprites():
+            alien.rect.y += self.config.manada_drop_speed
+        self.config.manada_direction *= -1
 
 if __name__ == '__main__':
     #Hacer una instancia con la clase y correr el juego con el metodo

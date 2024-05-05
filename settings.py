@@ -8,8 +8,14 @@ class Config():
         self.screen_height = 800
         self.bg_color = (0,0,0)
 
-        #Velocidad nave
+        #Config nave
         self.nave_speed = 1.5
+
+        #Config alien
+        self.alien_speed = 1.0
+        self.manada_drop_speed = 10
+        #Direccion(1 derecha, -1 izquierda)
+        self.manada_direction = 1
 
         #Config balas
         self.bala_speed = 1.0
