@@ -89,6 +89,29 @@ class AlienInvasion():
                     self._check_keydown_events(event)
                 elif event.type == pygame.KEYUP:
                     self._check_keyup_events(event)
+                elif event.type == pygame.MOUSEBUTTONDOWN:
+                    mouse_pos = pygame.mouse.get_pos()
+                    self._check_play_boton(mouse_pos)
+
+    def _check_play_boton(self, mouse_pos):
+        """Empezar el juego cuando se da click a Jugar"""
+        boton_clicked = self.play_boton.rect.collidepoint(mouse_pos)
+        if boton_clicked and not self.stats.game_active:
+            #Reiniciar stats
+            self.stats.reset_stats()
+            self.stats.game_active = True
+
+            #Eliminar aliens y balas
+            self.aliens.empty()
+            self.balas.empty()
+
+            #Crear nueva manada y centrar la nave
+            self._crear_manada()
+            self.nave.centrar_nave()
+
+            #Esconder mouse
+            pygame.mouse.set_visible(False)
+
 
     def _check_keydown_events(self, event):
         if event.key == pygame.K_RIGHT:
@@ -222,8 +245,11 @@ class AlienInvasion():
 
             #Pausa
             sleep(0.5)
+            
         else:
             self.stats.game_active = False
+            #Mouse visible de nuevo
+            pygame.mouse.set_visible(True)
 
     def _check_aliens_bottom(self):
         """Revisar si algún alien llega al final de la pantalla"""
