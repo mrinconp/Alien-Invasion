@@ -9,6 +9,7 @@ from bullet import Bala
 from alien import Alien
 from star import Star
 from game_stats import GameStats
+from boton import Boton
 
 class AlienInvasion():
     """Características del juego y comportamiento"""
@@ -45,6 +46,9 @@ class AlienInvasion():
         self.stars = pygame.sprite.Group()
         self._create_stars()
 
+        #Boton Jugar
+        self.play_boton = Boton(self, "Jugar")
+
     def run_game(self):
         """Se inicia el loop principal con un While"""
         while True:
@@ -54,7 +58,7 @@ class AlienInvasion():
                 self.nave.update()
                 self._update_balas()
                 self._update_aliens()
-                
+
             self._update_screen()
              
     def _update_screen(self):
@@ -69,6 +73,9 @@ class AlienInvasion():
             bala.draw_bala()
         #Dibujar aliens
         self.aliens.draw(self.screen)
+        #Dibujar botón si el juego está inactivo
+        if not self.stats.game_active:
+            self.play_boton.draw_boton()
 
         #Actualizar y hacer visible la pantalla
         pygame.display.flip()
