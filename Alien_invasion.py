@@ -1,4 +1,6 @@
 import sys
+from time import sleep
+
 import pygame
 import random
 from settings import Config
@@ -6,6 +8,7 @@ from nave import Nave
 from bullet import Bala
 from alien import Alien
 from star import Star
+from game_stats import GameStats
 
 class AlienInvasion():
     """Características del juego y comportamiento"""
@@ -25,6 +28,9 @@ class AlienInvasion():
         #Nombre de la ventana
         pygame.display.set_caption("Alien Invasion")
 
+        #Estadísticas
+        self.stats = GameStats(self)
+
         #Nave
         self.nave = Nave(self)
 
@@ -43,9 +49,12 @@ class AlienInvasion():
         """Se inicia el loop principal con un While"""
         while True:
             self._check_events()
-            self.nave.update()
-            self._update_balas()
-            self._update_aliens()
+
+            if self.stats.game_active:
+                self.nave.update()
+                self._update_balas()
+                self._update_aliens()
+                
             self._update_screen()
              
     def _update_screen(self):
@@ -122,6 +131,13 @@ class AlienInvasion():
         self._check_manada_bordes()
         self.aliens.update()
 
+        #Revisar colisión alien-nave
+        if pygame.sprite.spritecollideany(self.nave, self.aliens):
+            self._nave_hit()
+
+        #Revisar aliens llegando al final de la pantalla
+        self._check_aliens_bottom()
+
     def _crear_manada(self):
         """Manada de aliens"""
         #Alien de referencia para medidas, no para incluir en la manada
@@ -182,6 +198,35 @@ class AlienInvasion():
         for alien in self.aliens.sprites():
             alien.rect.y += self.config.manada_drop_speed
         self.config.manada_direction *= -1
+
+    def _nave_hit(self):
+        """Respuesta a colisiones alien-nave"""
+        if self.stats.nave_left > 0:
+            #Restar naves restantes:
+            self.stats.nave_left -= 1
+
+            #Eliminar aliens y balas
+            self.aliens.empty()
+            self.balas.empty()
+
+            #Crear nueva manada y centrar la nave
+            self._crear_manada()
+            self.nave.centrar_nave()
+
+            #Pausa
+            sleep(0.5)
+        else:
+            self.stats.game_active = False
+
+    def _check_aliens_bottom(self):
+        """Revisar si algún alien llega al final de la pantalla"""
+        screen_rect = self.screen.get_rect()
+
+        for alien in self.aliens.sprites():
+            if alien.rect.bottom >= screen_rect.bottom:
+                #Hacer lo mismo que cuando hay colisión alien-nave:
+                self._nave_hit()
+                break
 
 if __name__ == '__main__':
     #Hacer una instancia con la clase y correr el juego con el metodo

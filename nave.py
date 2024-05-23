@@ -40,3 +40,8 @@ class Nave():
     def blitme(self):
         """Dibujar la nave en su posición"""
         self.screen.blit(self.image, self.rect)
+
+    def centrar_nave(self):
+        """Centrar nave en la pantalla"""
+        self.rect.midbottom = self.screen_rect.midbottom
+        self.x = float(self.rect.x)

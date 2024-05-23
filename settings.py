@@ -10,10 +10,11 @@ class Config():
 
         #Config nave
         self.nave_speed = 1.5
+        self.nave_limit = 3
 
         #Config alien
         self.alien_speed = 1.0
-        self.manada_drop_speed = 10
+        self.manada_drop_speed = 100
         #Direccion(1 derecha, -1 izquierda)
         self.manada_direction = 1
 
