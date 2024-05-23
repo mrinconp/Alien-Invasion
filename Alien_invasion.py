@@ -47,7 +47,7 @@ class AlienInvasion():
         self._create_stars()
 
         #Boton Jugar
-        self.play_boton = Boton(self, "Jugar")
+        self.boton_play = Boton(self, "Jugar")
 
     def run_game(self):
         """Se inicia el loop principal con un While"""
@@ -75,7 +75,7 @@ class AlienInvasion():
         self.aliens.draw(self.screen)
         #Dibujar botón si el juego está inactivo
         if not self.stats.game_active:
-            self.play_boton.draw_boton()
+            self.boton_play.draw_boton()
 
         #Actualizar y hacer visible la pantalla
         pygame.display.flip()
@@ -91,26 +91,29 @@ class AlienInvasion():
                     self._check_keyup_events(event)
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     mouse_pos = pygame.mouse.get_pos()
-                    self._check_play_boton(mouse_pos)
+                    self._check_boton_play(mouse_pos)
 
-    def _check_play_boton(self, mouse_pos):
+    def _check_boton_play(self, mouse_pos):
         """Empezar el juego cuando se da click a Jugar"""
-        boton_clicked = self.play_boton.rect.collidepoint(mouse_pos)
+        boton_clicked = self.boton_play.rect.collidepoint(mouse_pos)
         if boton_clicked and not self.stats.game_active:
-            #Reiniciar stats
-            self.stats.reset_stats()
-            self.stats.game_active = True
+            self._start_game()
+            
+    def _start_game(self):
+        #Reiniciar stats
+        self.stats.reset_stats()
+        self.stats.game_active = True
 
-            #Eliminar aliens y balas
-            self.aliens.empty()
-            self.balas.empty()
+        #Eliminar aliens y balas
+        self.aliens.empty()
+        self.balas.empty()
 
-            #Crear nueva manada y centrar la nave
-            self._crear_manada()
-            self.nave.centrar_nave()
+        #Crear nueva manada y centrar la nave
+        self._crear_manada()
+        self.nave.centrar_nave()
 
-            #Esconder mouse
-            pygame.mouse.set_visible(False)
+        #Esconder mouse
+        pygame.mouse.set_visible(False)
 
 
     def _check_keydown_events(self, event):
@@ -122,6 +125,8 @@ class AlienInvasion():
             sys.exit()
         elif event.key == pygame.K_SPACE:
             self._disparar_bala()
+        elif event.key == pygame.K_p:
+            self._start_game()
 
     def _check_keyup_events(self, event):
         if event.key == pygame.K_RIGHT:
