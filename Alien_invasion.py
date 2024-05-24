@@ -98,6 +98,8 @@ class AlienInvasion():
         boton_clicked = self.boton_play.rect.collidepoint(mouse_pos)
         if boton_clicked and not self.stats.game_active:
             self._start_game()
+            #Reiniciar las configuraciones
+            self.config.iniciar_config_dinamicas()
             
     def _start_game(self):
         #Reiniciar stats
@@ -161,6 +163,7 @@ class AlienInvasion():
             #Eliminar balas existentes y crear nueva manada de aliens
             self.balas.empty()
             self._crear_manada()
+            self.config.aumentar_velocidad()
 
     def _update_aliens(self):
         self._check_manada_bordes()
