@@ -11,3 +11,4 @@ class GameStats():
     def reset_stats(self):
         """Iniciar estadísticas que pueden cambiar durante el juego"""
         self.nave_left = self.config.nave_limit
+        self.puntuacion = 0
