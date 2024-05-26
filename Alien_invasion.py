@@ -226,7 +226,7 @@ class AlienInvasion():
         #Coordenadas del rectángulo donde se va a posicionar el alien
         alien.x = alien_width + 2*alien_width*alien_number
         alien.rect.x = alien.x
-        alien.rect.y = alien_height + 2*alien_height*row_number
+        alien.rect.y = 10 + alien_height + 2*alien_height*row_number
         self.aliens.add(alien)
 
 

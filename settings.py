@@ -12,12 +12,12 @@ class Config():
         self.nave_limit = 3
 
         #Config alien
-        self.manada_drop_speed = 150
+        self.manada_drop_speed = 10
         
         #Config balas
-        self.bala_width = 1000
+        self.bala_width = 3
         self.bala_height = 15
-        self.bala_color = (60,60,60)
+        self.bala_color = (255,255,0)
         self.balas_max = 3
 
         #Config estrellas
