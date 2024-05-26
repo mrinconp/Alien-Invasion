@@ -137,8 +137,7 @@ class AlienInvasion():
             sys.exit()
         elif event.key == pygame.K_SPACE:
             self._disparar_bala()
-
-        elif event.key == pygame.K_p:
+        elif event.key == pygame.K_p and not self.stats.game_active:
             self._start_game()
             self.config.iniciar_config_dinamicas()
             self.sb.prep_images()
