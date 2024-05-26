@@ -37,6 +37,9 @@ class Config():
         #Direccion manada (1 derecha, -1 izquierda)
         self.manada_direction = 1
 
+        #Puntaje
+        self.alien_points = 50
+
     def aumentar_velocidad(self):
         """Aumentar la velocidad del juego"""
         self.nave_speed *= self.aumento_vel_escala
