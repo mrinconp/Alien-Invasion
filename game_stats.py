@@ -14,3 +14,4 @@ class GameStats():
         """Iniciar estadísticas que pueden cambiar durante el juego"""
         self.nave_left = self.config.nave_limit
         self.puntuacion = 0
+        self.nivel = 1

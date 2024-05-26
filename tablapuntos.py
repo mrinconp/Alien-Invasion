@@ -17,6 +17,7 @@ class Scoreboard():
         #Preparar la imagen de puntuación inicial
         self.prep_puntuacion()
         self.prep_mayor_puntuacion()
+        self.prep_nivel()
 
     def prep_puntuacion(self):
         """Renderizar la puntuación a imagen"""
@@ -34,6 +35,7 @@ class Scoreboard():
         """Dibujar la puntuación en la pantalla"""
         self.screen.blit(self.puntuacion_image, self.puntuacion_rect)
         self.screen.blit(self.mayor_puntuacion_image, self.mayor_puntuacion_rect) 
+        self.screen.blit(self.nivel_image, self.nivel_rect)
 
     def prep_mayor_puntuacion(self):
         """Renderizar la mayor puntuación a imagen"""
@@ -52,4 +54,16 @@ class Scoreboard():
         if self.stats.puntuacion > self.stats.mayor_puntuacion:
             self.stats.mayor_puntuacion = self.stats.puntuacion
             self.prep_mayor_puntuacion()
+
+    def prep_nivel(self):
+        """Renderizar nivel a imagen"""
+        nivel_str = str(self.stats.nivel)
+        self.nivel_image = self.font.render(nivel_str, True,
+                                            self.text_color, self.config.bg_color)
+        
+        #Posicionar nivel
+        self.nivel_rect = self.nivel_image.get_rect()
+        self.nivel_rect.right = self.puntuacion_rect.right
+        self.nivel_rect.top = self.puntuacion_rect.bottom + 10
+
 

@@ -106,6 +106,7 @@ class AlienInvasion():
             #Reiniciar las configuraciones
             self.config.iniciar_config_dinamicas()
             self.sb.prep_puntuacion()
+            self.sb.prep_nivel()
             
     def _start_game(self):
         #Reiniciar stats
@@ -135,6 +136,9 @@ class AlienInvasion():
             self._disparar_bala()
         elif event.key == pygame.K_p:
             self._start_game()
+            self.config.iniciar_config_dinamicas()
+            self.sb.prep_puntuacion()
+            self.sb.prep_nivel()
 
     def _check_keyup_events(self, event):
         if event.key == pygame.K_RIGHT:
@@ -176,6 +180,10 @@ class AlienInvasion():
             self.balas.empty()
             self._crear_manada()
             self.config.aumentar_velocidad()
+
+            #Aumentar nivel
+            self.stats.nivel += 1
+            self.sb.prep_nivel()
 
     def _update_aliens(self):
         self._check_manada_bordes()
