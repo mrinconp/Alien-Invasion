@@ -58,7 +58,7 @@ class Scoreboard():
 
     def check_mayor_puntuacion(self):
         """Revisar si hay una nueva mayor puntuacion"""
-        if self.stats.puntuacion > self.stats.mayor_puntuacion:
+        if self.stats.puntuacion >= self.stats.mayor_puntuacion:
             self.stats.mayor_puntuacion = self.stats.puntuacion
             self.prep_mayor_puntuacion()
 

@@ -89,6 +89,7 @@ class AlienInvasion():
         #Event loop para registrar eventos(acciones) del teclado y mouse
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
+                    self.stats.save_mayor_puntuacion()
                     sys.exit()
                 elif event.type ==pygame.KEYDOWN:
                     self._check_keydown_events(event)
@@ -132,6 +133,7 @@ class AlienInvasion():
         elif event.key == pygame.K_LEFT:
             self.nave.moving_left = True
         elif event.key == pygame.K_q:
+            self.stats.save_mayor_puntuacion()
             sys.exit()
         elif event.key == pygame.K_SPACE:
             self._disparar_bala()
