@@ -25,6 +25,7 @@ class Bala(Sprite):
         self.rect.y = self.y
     
     def draw_bala(self):
-        #Dibujar la bala en la pantalla
+        #Dibujar la bala en la pantalla y reproducir sonido
         pygame.draw.rect(self.screen, self.color, self.rect)
+
         

@@ -16,6 +16,7 @@ class AlienInvasion():
     """Características del juego y comportamiento"""
     def __init__(self):
         #Iniciar el juego y crear los recursos
+        pygame.mixer.pre_init(buffer=2048)
         pygame.init()
         #Configuración general de la screen
         self.config = Config()
@@ -36,6 +37,11 @@ class AlienInvasion():
         self.nave = Nave(self, 0.15)
         #Balas
         self.balas = pygame.sprite.Group()
+        #Sonidos
+        self.bala_sound = pygame.mixer.Sound('recursos/laser_sound.wav')
+        self.nave_hit_sound = pygame.mixer.Sound('recursos/nave_hit.wav')
+        self.level_up_sound = pygame.mixer.Sound('recursos/level_up.wav')
+        self._set_volumenes()
         #Aliens
         self.aliens = pygame.sprite.Group()
         self._crear_manada()
@@ -44,7 +50,6 @@ class AlienInvasion():
         self._create_stars()
         #Boton Jugar
         self.boton_play = Boton(self, "Jugar")
-
 
     def run_game(self):
         """Se inicia el loop principal con un While"""
@@ -57,6 +62,11 @@ class AlienInvasion():
                 self._update_aliens()
 
             self._update_screen()
+
+    def _set_volumenes(self):
+        self.bala_sound.set_volume(self.config.volumen_balas)
+        self.nave_hit_sound.set_volume(self.config.volumen_vidas)
+        self.level_up_sound.set_volume(self.config.volumen_level_up)
              
     def _update_screen(self):
         #Aplicar color en cada iteración
@@ -127,6 +137,7 @@ class AlienInvasion():
             sys.exit()
         elif event.key == pygame.K_SPACE:
             self._disparar_bala()
+
         elif event.key == pygame.K_p:
             self._start_game()
             self.config.iniciar_config_dinamicas()
@@ -141,7 +152,9 @@ class AlienInvasion():
     def _disparar_bala(self):
         if len(self.balas) < self.config.balas_max:
             nueva_bala = Bala(self)
-            self.balas.add(nueva_bala)  
+            self.balas.add(nueva_bala)
+            #Reproducir sonido
+            pygame.mixer.find_channel(True).play(self.bala_sound)
 
     def _update_balas(self):
         """Actualizar posición de las balas y eliminar las que salen de la pantalla"""
@@ -169,14 +182,17 @@ class AlienInvasion():
             self._start_nuevo_nivel()
 
     def _start_nuevo_nivel(self):
-        #Eliminar balas existentes y crear nueva manada de aliens
-            self.balas.empty()
-            self._crear_manada()
-            self.config.aumentar_velocidad()
+        #Reproducir sonido    
+        pygame.mixer.find_channel(True).play(self.level_up_sound)
 
-            #Aumentar nivel
-            self.stats.nivel += 1
-            self.sb.prep_nivel()
+        #Eliminar balas existentes y crear nueva manada de aliens
+        self.balas.empty()
+        self._crear_manada()
+        self.config.aumentar_velocidad()
+
+        #Aumentar nivel
+        self.stats.nivel += 1
+        self.sb.prep_nivel()
 
     def _update_aliens(self):
         self._check_manada_bordes()
@@ -252,6 +268,8 @@ class AlienInvasion():
     def _nave_hit(self):
         """Respuesta a colisiones alien-nave"""
         if self.stats.nave_left > 0:
+            #Reproducir sonido
+            pygame.mixer.find_channel(True).play(self.nave_hit_sound)
             #Restar naves restantes:
             self.stats.nave_left -= 1
             self.sb.prep_naves()

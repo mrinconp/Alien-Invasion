@@ -23,6 +23,11 @@ class Config():
         #Config estrellas
         self.cantidad_estrellas = 200
 
+        #Config sonidos
+        self.volumen_balas = 0.05
+        self.volumen_vidas = 0.5
+        self.volumen_level_up = 0.5
+
         #Tasa de aumento de velocidad
         self.aumento_vel_escala = 1.1
         #Tasa de aumento puntuación
