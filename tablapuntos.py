@@ -18,8 +18,11 @@ class Scoreboard():
         #Configuración de la fuente
         self.text_color = (250,250,250)
         self.font = pygame.font.SysFont(None, 48)
-
-        #Preparar la imagen de puntuación inicial
+        
+        self.prep_images()
+        
+    def prep_images(self):
+        #Preparar imagenes de puntuación inicial
         self.prep_puntuacion()
         self.prep_mayor_puntuacion()
         self.prep_nivel()

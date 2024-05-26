@@ -29,25 +29,19 @@ class AlienInvasion():
         self.screen = pygame.display.set_mode((1200,800))
         #Nombre de la ventana
         pygame.display.set_caption("Alien Invasion")
-
         #Estadísticas y puntuación
         self.stats = GameStats(self)
         self.sb = Scoreboard(self)
-
         #Nave
         self.nave = Nave(self, 0.15)
-
         #Balas
         self.balas = pygame.sprite.Group()
-
         #Aliens
         self.aliens = pygame.sprite.Group()
         self._crear_manada()
-
         #Estrellas
         self.stars = pygame.sprite.Group()
         self._create_stars()
-
         #Boton Jugar
         self.boton_play = Boton(self, "Jugar")
 
@@ -81,7 +75,6 @@ class AlienInvasion():
         #Dibujar botón si el juego está inactivo
         if not self.stats.game_active:
             self.boton_play.draw_boton()
-
         #Actualizar y hacer visible la pantalla
         pygame.display.flip()
     
@@ -106,9 +99,7 @@ class AlienInvasion():
             self._start_game()
             #Reiniciar las configuraciones
             self.config.iniciar_config_dinamicas()
-            self.sb.prep_puntuacion()
-            self.sb.prep_nivel()
-            self.sb.prep_naves()
+            self.sb.prep_images()
             
     def _start_game(self):
         #Reiniciar stats
@@ -126,7 +117,6 @@ class AlienInvasion():
         #Esconder mouse
         pygame.mouse.set_visible(False)
 
-
     def _check_keydown_events(self, event):
         if event.key == pygame.K_RIGHT:
             self.nave.moving_right = True
@@ -140,16 +130,13 @@ class AlienInvasion():
         elif event.key == pygame.K_p:
             self._start_game()
             self.config.iniciar_config_dinamicas()
-            self.sb.prep_puntuacion()
-            self.sb.prep_nivel()
-            self.sb.prep_naves()
+            self.sb.prep_images()
 
     def _check_keyup_events(self, event):
         if event.key == pygame.K_RIGHT:
             self.nave.moving_right = False
         elif event.key == pygame.K_LEFT:
             self.nave.moving_left = False
-
 
     def _disparar_bala(self):
         if len(self.balas) < self.config.balas_max:
@@ -164,7 +151,6 @@ class AlienInvasion():
         for bala in self.balas.copy():
             if bala.rect.bottom <= 0:
                 self.balas.remove(bala)
-
         self._check_colisiones_bala_alien()
         
     def _check_colisiones_bala_alien(self):
@@ -180,7 +166,10 @@ class AlienInvasion():
             self.sb.check_mayor_puntuacion()
 
         if not self.aliens:
-            #Eliminar balas existentes y crear nueva manada de aliens
+            self._start_nuevo_nivel()
+
+    def _start_nuevo_nivel(self):
+        #Eliminar balas existentes y crear nueva manada de aliens
             self.balas.empty()
             self._crear_manada()
             self.config.aumentar_velocidad()
@@ -244,7 +233,6 @@ class AlienInvasion():
 
     def _create_star(self, x, y):
         star = Star(self)
-
         star.rect.x = x
         star.rect.y = y
         self.stars.add(star)
@@ -267,15 +255,12 @@ class AlienInvasion():
             #Restar naves restantes:
             self.stats.nave_left -= 1
             self.sb.prep_naves()
-
             #Eliminar aliens y balas
             self.aliens.empty()
             self.balas.empty()
-
             #Crear nueva manada y centrar la nave
             self._crear_manada()
             self.nave.centrar_nave()
-
             #Pausa
             sleep(0.5)
             
@@ -287,7 +272,6 @@ class AlienInvasion():
     def _check_aliens_bottom(self):
         """Revisar si algún alien llega al final de la pantalla"""
         screen_rect = self.screen.get_rect()
-
         for alien in self.aliens.sprites():
             if alien.rect.bottom >= screen_rect.bottom:
                 #Hacer lo mismo que cuando hay colisión alien-nave:
