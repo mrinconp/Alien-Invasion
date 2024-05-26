@@ -86,18 +86,18 @@ class AlienInvasion():
         pygame.display.flip()
     
     def _check_events(self):
-        #Event loop para registrar eventos(acciones) del teclado y mouse
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    self.stats.save_mayor_puntuacion()
-                    sys.exit()
-                elif event.type ==pygame.KEYDOWN:
-                    self._check_keydown_events(event)
-                elif event.type == pygame.KEYUP:
-                    self._check_keyup_events(event)
-                elif event.type == pygame.MOUSEBUTTONDOWN:
-                    mouse_pos = pygame.mouse.get_pos()
-                    self._check_boton_play(mouse_pos)
+        """Event loop para registrar eventos(acciones) del teclado y mouse"""
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                self.stats.save_mayor_puntuacion()
+                sys.exit()
+            elif event.type ==pygame.KEYDOWN:
+                self._check_keydown_events(event)
+            elif event.type == pygame.KEYUP:
+                self._check_keyup_events(event)
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                mouse_pos = pygame.mouse.get_pos()
+                self._check_boton_play(mouse_pos)
 
     def _check_boton_play(self, mouse_pos):
         """Empezar el juego cuando se da click a Jugar"""
@@ -168,8 +168,8 @@ class AlienInvasion():
         self._check_colisiones_bala_alien()
         
     def _check_colisiones_bala_alien(self):
-        #Revisar colisiones y borrar alien dado el caso
-            #Los dos argumentos True borran los elementos que colisionan
+        """Revisar colisiones y borrar alien dado el caso"""
+        #Los dos argumentos True borran los elementos que colisionan
         collisions = pygame.sprite.groupcollide(
             self.balas, self.aliens, True, True)
         
