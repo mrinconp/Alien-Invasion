@@ -25,6 +25,8 @@ class Config():
 
         #Tasa de aumento de velocidad
         self.aumento_vel_escala = 1.1
+        #Tasa de aumento puntuación
+        self.puntuacion_escala = 1.5
 
         self.iniciar_config_dinamicas()
 
@@ -41,7 +43,9 @@ class Config():
         self.alien_points = 50
 
     def aumentar_velocidad(self):
-        """Aumentar la velocidad del juego"""
+        """Aumentar la velocidad del juego y de la puntuación"""
         self.nave_speed *= self.aumento_vel_escala
         self.bala_speed *= self.aumento_vel_escala
         self.alien_speed *= self.aumento_vel_escala
+
+        self.alien_points = int(self.alien_points * self.puntuacion_escala)
