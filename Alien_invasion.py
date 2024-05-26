@@ -128,9 +128,9 @@ class AlienInvasion():
         pygame.mouse.set_visible(False)
 
     def _check_keydown_events(self, event):
-        if event.key == pygame.K_RIGHT:
+        if event.key == pygame.K_RIGHT or event.key == pygame.K_d:
             self.nave.moving_right = True
-        elif event.key == pygame.K_LEFT:
+        elif event.key == pygame.K_LEFT or event.key == pygame.K_a:
             self.nave.moving_left = True
         elif event.key == pygame.K_q:
             self.stats.save_mayor_puntuacion()
@@ -143,9 +143,9 @@ class AlienInvasion():
             self.sb.prep_images()
 
     def _check_keyup_events(self, event):
-        if event.key == pygame.K_RIGHT:
+        if event.key == pygame.K_RIGHT or event.key == pygame.K_d:
             self.nave.moving_right = False
-        elif event.key == pygame.K_LEFT:
+        elif event.key == pygame.K_LEFT or event.key == pygame.K_a:
             self.nave.moving_left = False
 
     def _disparar_bala(self):
