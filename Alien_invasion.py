@@ -105,7 +105,7 @@ class AlienInvasion():
             self._start_game()
             #Reiniciar las configuraciones
             self.config.iniciar_config_dinamicas()
-            self.sb.prep_score()
+            self.sb.prep_puntuacion()
             
     def _start_game(self):
         #Reiniciar stats
@@ -168,7 +168,8 @@ class AlienInvasion():
         if collisions:
             for aliens in collisions.values():
                 self.stats.puntuacion += self.config.alien_points * len(aliens)
-            self.sb.prep_score()
+            self.sb.prep_puntuacion()
+            self.sb.check_mayor_puntuacion()
 
         if not self.aliens:
             #Eliminar balas existentes y crear nueva manada de aliens

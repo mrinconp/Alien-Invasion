@@ -15,20 +15,41 @@ class Scoreboard():
         self.font = pygame.font.SysFont(None, 48)
 
         #Preparar la imagen de puntuación inicial
-        self.prep_score()
+        self.prep_puntuacion()
+        self.prep_mayor_puntuacion()
 
-    def prep_score(self):
+    def prep_puntuacion(self):
         """Renderizar la puntuación a imagen"""
-        rounded_score = round(self.stats.puntuacion, -1)
-        score_str = "{:,}".format(rounded_score)
-        self.score_image = self.font.render(score_str, True,
+        rounded_puntuacion = round(self.stats.puntuacion, -1)
+        puntuacion_str = "{:,}".format(rounded_puntuacion)
+        self.puntuacion_image = self.font.render(puntuacion_str, True,
                                             self.text_color, self.config.bg_color)
 
         # Mostrar la puntuación en la esquina derecha superior de la pantalla
-        self.score_rect = self.score_image.get_rect()
-        self.score_rect.right = self.screen_rect.right - 20
-        self.score_rect.top = 20
+        self.puntuacion_rect = self.puntuacion_image.get_rect()
+        self.puntuacion_rect.right = self.screen_rect.right - 20
+        self.puntuacion_rect.top = 20
 
     def mostrar_puntuacion(self):
         """Dibujar la puntuación en la pantalla"""
-        self.screen.blit(self.score_image, self.score_rect)
+        self.screen.blit(self.puntuacion_image, self.puntuacion_rect)
+        self.screen.blit(self.mayor_puntuacion_image, self.mayor_puntuacion_rect) 
+
+    def prep_mayor_puntuacion(self):
+        """Renderizar la mayor puntuación a imagen"""
+        mayor_puntuacion = round(self.stats.mayor_puntuacion, -1)
+        mayor_puntuacion_str = "{:,}".format(mayor_puntuacion)
+        self.mayor_puntuacion_image = self.font.render(mayor_puntuacion_str, True,
+                                            self.text_color, self.config.bg_color)
+        
+        # Centrar la mayor puntuacion en la parte superior de la pantalla
+        self.mayor_puntuacion_rect = self.mayor_puntuacion_image.get_rect()
+        self.mayor_puntuacion_rect.centerx = self.screen_rect.centerx
+        self.mayor_puntuacion_rect.top = self.puntuacion_rect.top
+
+    def check_mayor_puntuacion(self):
+        """Revisar si hay una nueva mayor puntuacion"""
+        if self.stats.puntuacion > self.stats.mayor_puntuacion:
+            self.stats.mayor_puntuacion = self.stats.puntuacion
+            self.prep_mayor_puntuacion()
+

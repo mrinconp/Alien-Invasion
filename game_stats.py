@@ -7,6 +7,8 @@ class GameStats():
         self.reset_stats()
         #Iniciar el juego en un estado inactivo
         self.game_active = False
+        #Mayor puntuacion (no se debe reiniciar)
+        self.mayor_puntuacion = 0
 
     def reset_stats(self):
         """Iniciar estadísticas que pueden cambiar durante el juego"""
