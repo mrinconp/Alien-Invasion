@@ -1,17 +1,21 @@
 import pygame
+from pygame.sprite import Sprite
 
-class Nave():
+class Nave(Sprite):
     """Una clase para configurar la nave"""
 
-    def __init__(self, ai_game):
+    def __init__(self, ai_game, scale):
         """Crear la nave y posicionarla"""
+        super().__init__()
+
         self.screen = ai_game.screen
         self.settings = ai_game.config
         self.screen_rect = ai_game.screen.get_rect() #rectangulo de la pantalla
 
         #Cargar la imagen de la nave y su rectangulo
         self.raw = pygame.image.load('recursos/nave1.bmp')
-        self.image = pygame.transform.scale_by(self.raw, 0.15)
+        self.scale = scale
+        self.image = pygame.transform.scale_by(self.raw, self.scale)
         self.rect = self.image.get_rect()
 
         self.rect.midbottom = self.screen_rect.midbottom

@@ -1,10 +1,15 @@
 import pygame.font
+from pygame.sprite import Group
+
+from nave import Nave
 
 class Scoreboard():
     """Una clase para registrar la puntuación"""
 
     def __init__(self, ai_game):
         """Inicializar los atributos de la tabla"""
+
+        self.ai_game = ai_game
         self.screen = ai_game.screen
         self.screen_rect = self.screen.get_rect()
         self.config = ai_game.config
@@ -18,6 +23,7 @@ class Scoreboard():
         self.prep_puntuacion()
         self.prep_mayor_puntuacion()
         self.prep_nivel()
+        self.prep_naves()
 
     def prep_puntuacion(self):
         """Renderizar la puntuación a imagen"""
@@ -32,10 +38,11 @@ class Scoreboard():
         self.puntuacion_rect.top = 20
 
     def mostrar_puntuacion(self):
-        """Dibujar la puntuación en la pantalla"""
+        """Dibujar la puntuación, nivel, mayor puntuacion y naves en la pantalla"""
         self.screen.blit(self.puntuacion_image, self.puntuacion_rect)
         self.screen.blit(self.mayor_puntuacion_image, self.mayor_puntuacion_rect) 
         self.screen.blit(self.nivel_image, self.nivel_rect)
+        self.naves.draw(self.screen)
 
     def prep_mayor_puntuacion(self):
         """Renderizar la mayor puntuación a imagen"""
@@ -65,5 +72,15 @@ class Scoreboard():
         self.nivel_rect = self.nivel_image.get_rect()
         self.nivel_rect.right = self.puntuacion_rect.right
         self.nivel_rect.top = self.puntuacion_rect.bottom + 10
+
+    def prep_naves(self):
+        """Mostrar cuantas naves quedan"""
+        self.naves = Group()
+        for numero_nave in range(self.stats.nave_left):
+            nave = Nave(self.ai_game, 0.1)
+            nave.rect.x = 10 + numero_nave* nave.rect.width
+            nave.rect.y = 10
+            self.naves.add(nave)
+
 
 

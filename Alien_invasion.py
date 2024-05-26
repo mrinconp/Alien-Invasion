@@ -35,7 +35,7 @@ class AlienInvasion():
         self.sb = Scoreboard(self)
 
         #Nave
-        self.nave = Nave(self)
+        self.nave = Nave(self, 0.15)
 
         #Balas
         self.balas = pygame.sprite.Group()
@@ -107,6 +107,7 @@ class AlienInvasion():
             self.config.iniciar_config_dinamicas()
             self.sb.prep_puntuacion()
             self.sb.prep_nivel()
+            self.sb.prep_naves()
             
     def _start_game(self):
         #Reiniciar stats
@@ -139,6 +140,7 @@ class AlienInvasion():
             self.config.iniciar_config_dinamicas()
             self.sb.prep_puntuacion()
             self.sb.prep_nivel()
+            self.sb.prep_naves()
 
     def _check_keyup_events(self, event):
         if event.key == pygame.K_RIGHT:
@@ -262,6 +264,7 @@ class AlienInvasion():
         if self.stats.nave_left > 0:
             #Restar naves restantes:
             self.stats.nave_left -= 1
+            self.sb.prep_naves()
 
             #Eliminar aliens y balas
             self.aliens.empty()
