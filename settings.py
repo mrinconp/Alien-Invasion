@@ -19,7 +19,12 @@ class Config():
         self.bala_height = 15
         self.bala_color = (255,255,0)
         self.balas_max = 3
+        #Balas jefe
+        self.bala_jefe_width = 10
+        self.bala_jefe_height = 10
+        self.bala_jefe_color = (255,255,0)
         self.balas_daño = 100
+        self.bala_jefe_speed = 5.0
 
         #Config estrellas
         self.cantidad_estrellas = 200
