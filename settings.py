@@ -19,6 +19,7 @@ class Config():
         self.bala_height = 15
         self.bala_color = (255,255,0)
         self.balas_max = 3
+        self.balas_daño = 100
 
         #Config estrellas
         self.cantidad_estrellas = 200
@@ -33,6 +34,10 @@ class Config():
         #Tasa de aumento puntuación
         self.puntuacion_escala = 1.5
 
+        #Config jefe
+        self.nivel_jefe = 1
+        self.jefe_speed = 2.0
+
         self.iniciar_config_dinamicas()
 
     def iniciar_config_dinamicas(self):
@@ -43,6 +48,8 @@ class Config():
 
         #Direccion manada (1 derecha, -1 izquierda)
         self.manada_direction = 1
+
+        self.direccion_jefe = 1
 
         #Puntaje
         self.alien_points = 50
