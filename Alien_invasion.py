@@ -13,91 +13,87 @@ from boton import Boton
 from tablapuntos import Scoreboard
 from jefe import Jefe
 
-class AlienInvasion():
-    """Características del juego y comportamiento"""
+class AlienInvasion:
+    """Clase principal para gestionar los recursos y el comportamiento del juego."""
+
     def __init__(self):
-        #Iniciar el juego y crear los recursos
-        pygame.mixer.pre_init(buffer=2048)
+        pygame.mixer.pre_init(buffer=4096)
         pygame.init()
-        #Configuración general de la screen
         self.config = Config()
-        self.screen = pygame.display.set_mode((1200,800))
-        #Nombre de la ventana
+        self.screen = pygame.display.set_mode((1200, 800))
         pygame.display.set_caption("Alien Invasion")
-        #Estadísticas y puntuación
+
         self.stats = GameStats(self)
         self.sb = Scoreboard(self)
-        #Nave
         self.nave = Nave(self, 0.15)
-        #Balas
         self.balas = pygame.sprite.Group()
-        #Sonidos
-        self.bala_sound = pygame.mixer.Sound('recursos/laser_sound.wav')
-        self.nave_hit_sound = pygame.mixer.Sound('recursos/nave_hit.wav')
-        self.level_up_sound = pygame.mixer.Sound('recursos/level_up.wav')
-        self._set_volumenes()
-        #Aliens
         self.aliens = pygame.sprite.Group()
-        self._crear_manada()
-        #Estrellas
         self.stars = pygame.sprite.Group()
-        self._create_stars()
-        #Jefe
-        self.jefe = Jefe(self)
         self.balas_jefe = pygame.sprite.Group()
-        #Boton Jugar
+        self.last_shot_time = 0
         self.boton_play = Boton(self, "Jugar")
 
+        self._make_sonidos()
+        self._crear_flota()
+        self._create_stars()
+
     def run_game(self):
-        """Se inicia el loop principal con un While"""
+        """Iniciar el bucle principal del juego."""
         while True:
             self._check_events()
-
             if self.stats.game_active:
                 self.nave.update()
-                self._update_balas()
+                self._update_balas(self.balas, "nave")
                 self._update_aliens()
                 if self.stats.nivel == self.config.nivel_jefe:
                     self.aliens.empty()
                     self.jefe.update()
-
+                    self._update_balas(self.balas_jefe, "jefe")
+                    self._check_jefe_shoot()
             self._update_screen()
 
+    def _make_sonidos(self):
+        """Inicializar y configurar los sonidos del juego."""
+        self.bala_sound = pygame.mixer.Sound('recursos/laser_sound.wav')
+        self.nave_hit_sound = pygame.mixer.Sound('recursos/nave_hit.wav')
+        self.level_up_sound = pygame.mixer.Sound('recursos/level_up.wav')
+        self.victory_sound = pygame.mixer.Sound('recursos/victory.wav')
+        pygame.mixer.music.load('recursos/bg_music.mp3')
+        pygame.mixer.music.set_volume(0.2)
+        pygame.mixer.music.play(-1)
+        self._set_volumenes()
+
     def _set_volumenes(self):
+        """Establecer el volumen de los sonidos del juego."""
         self.bala_sound.set_volume(self.config.volumen_balas)
         self.nave_hit_sound.set_volume(self.config.volumen_vidas)
         self.level_up_sound.set_volume(self.config.volumen_level_up)
-             
+
     def _update_screen(self):
-        #Aplicar color en cada iteración
+        """Actualizar las imágenes en la pantalla y cambiar a la nueva pantalla."""
         self.screen.fill(self.config.bg_color)
-        #Dibujar estrellas
         self.stars.draw(self.screen)
-        #Dibujar nave
         self.nave.blitme()
-        #Dibujar balas
         for bala in self.balas.sprites():
             bala.draw_bala()
-        #Dibujar aliens
         if self.stats.nivel == self.config.nivel_jefe:
             self.jefe.draw_jefe()
+            for bala in self.balas_jefe.sprites():
+                bala.draw_bala()
         else:
             self.aliens.draw(self.screen)
-        #Dibujar la puntuación
         self.sb.mostrar_puntuacion()
-        #Dibujar botón si el juego está inactivo
         if not self.stats.game_active:
             self.boton_play.draw_boton()
-        #Actualizar y hacer visible la pantalla
         pygame.display.flip()
-    
+
     def _check_events(self):
-        """Event loop para registrar eventos(acciones) del teclado y mouse"""
+        """Responder a las pulsaciones de teclas y eventos del ratón."""
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.stats.save_mayor_puntuacion()
                 sys.exit()
-            elif event.type ==pygame.KEYDOWN:
+            elif event.type == pygame.KEYDOWN:
                 self._check_keydown_events(event)
             elif event.type == pygame.KEYUP:
                 self._check_keyup_events(event)
@@ -106,28 +102,25 @@ class AlienInvasion():
                 self._check_boton_play(mouse_pos)
 
     def _check_boton_play(self, mouse_pos):
-        """Empezar el juego cuando se da click a Jugar"""
+        """Iniciar un nuevo juego cuando el jugador hace clic en Play."""
         boton_clicked = self.boton_play.rect.collidepoint(mouse_pos)
         if boton_clicked and not self.stats.game_active:
             self._start_game()
-            #Reiniciar las configuraciones
-            self.config.iniciar_config_dinamicas()
+            self.config.reset_config()
             self.sb.prep_images()
-            
+
     def _start_game(self):
-        #Reiniciar stats
+        """Reiniciar la configuración del juego y empezar un nuevo juego."""
         self.stats.reset_stats()
         self.stats.game_active = True
 
-        #Eliminar aliens y balas
         self.aliens.empty()
         self.balas.empty()
+        self.balas_jefe.empty()
 
-        #Crear nueva manada y centrar la nave
-        self._crear_manada()
+        self._crear_flota()
         self.nave.centrar_nave()
 
-        #Esconder mouse
         pygame.mouse.set_visible(False)
 
     def _check_keydown_events(self, event):
@@ -139,10 +132,10 @@ class AlienInvasion():
             self.stats.save_mayor_puntuacion()
             sys.exit()
         elif event.key == pygame.K_SPACE:
-            self._disparar_bala()
+            self._disparar_bala("nave")
         elif event.key == pygame.K_p and not self.stats.game_active:
             self._start_game()
-            self.config.iniciar_config_dinamicas()
+            self.config.reset_config()
             self.sb.prep_images()
 
     def _check_keyup_events(self, event):
@@ -151,30 +144,31 @@ class AlienInvasion():
         elif event.key == pygame.K_LEFT or event.key == pygame.K_a:
             self.nave.moving_left = False
 
-    def _disparar_bala(self):
-        if len(self.balas) < self.config.balas_max:
-            nueva_bala = Bala(self)
-            self.balas.add(nueva_bala)
-            #Reproducir sonido
-            pygame.mixer.find_channel(True).play(self.bala_sound)
+    def _disparar_bala(self, shooter: str):
+        if shooter == "nave":
+            if len(self.balas) < self.config.balas_max:
+                nueva_bala = Bala(self, shooter)
+                self.balas.add(nueva_bala)
+                pygame.mixer.find_channel(True).play(self.bala_sound)
+        elif shooter == "jefe":
+            nueva_bala = Bala(self, shooter)
+            self.balas_jefe.add(nueva_bala)
 
-    def _update_balas(self):
-        """Actualizar posición de las balas y eliminar las que salen de la pantalla"""
-        #Actualizar posición
-        self.balas.update()
-        #Quitar balas que salen de la pantalla
-        for bala in self.balas.copy():
-            if bala.rect.bottom <= 0:
-                self.balas.remove(bala)
-        self._check_colisiones_bala_alien()
-        self._check_colisiones_bala_jefe()
-        
+    def _update_balas(self, grupo_balas, shooter: str):
+        """Actualizar la posición de las balas y eliminar las antiguas."""
+        grupo_balas.update()
+        for bala in grupo_balas.copy():
+            if bala.rect.bottom <= 0 or bala.rect.top >= self.config.screen_height:
+                grupo_balas.remove(bala)
+        if shooter == "nave":
+            self._check_colisiones_bala_alien()
+        elif shooter == "jefe":
+            self._check_colisiones_jefe_nave()
+            self._check_colisiones_bala_jefe()
+
     def _check_colisiones_bala_alien(self):
-        """Revisar colisiones y borrar alien dado el caso"""
-        #Los dos argumentos True borran los elementos que colisionan
-        collisions = pygame.sprite.groupcollide(
-            self.balas, self.aliens, True, True)
-        
+        """Responder a las colisiones entre balas y aliens."""
+        collisions = pygame.sprite.groupcollide(self.balas, self.aliens, True, True)
         if collisions:
             for aliens in collisions.values():
                 self.stats.puntuacion += self.config.alien_points * len(aliens)
@@ -184,82 +178,69 @@ class AlienInvasion():
         if not self.aliens and self.stats.nivel != self.config.nivel_jefe:
             self._start_nuevo_nivel()
 
-        if not self.jefe:
-            self._end_game()
+    def _check_colisiones_jefe_nave(self):
+        """Comprobar las colisiones entre las balas del jefe y la nave."""
+        for bala in self.balas_jefe.sprites():
+            if bala.rect.colliderect(self.nave.rect):
+                self._nave_hit()
+                self.balas_jefe.remove(bala)
 
     def _check_colisiones_bala_jefe(self):
-        """Revisar colisiones bala-jefe y disminuir vida del jefe"""
+        """Comprobar las colisiones entre las balas de la nave y el jefe y reducir la salud del jefe."""
         for bala in self.balas.copy():
             if bala.rect.colliderect(self.jefe.rect):
-                colision = True
-            else:
-                colision = False
-
-            if colision:
                 self._boss_hit()
                 self.balas.remove(bala)
 
     def _start_nuevo_nivel(self):
-        #Reproducir sonido    
+        """Iniciar un nuevo nivel."""
         pygame.mixer.find_channel(True).play(self.level_up_sound)
-
-        #Eliminar balas existentes y crear nueva manada de aliens si no es nivel de jefe
         self.balas.empty()
-        self._crear_manada()
-        self.config.aumentar_velocidad()
 
-        #Aumentar nivel
+        if self.stats.nivel + 1 == self.config.nivel_jefe:
+            self.jefe = Jefe(self)
+        else:
+            self._crear_flota()
+
+        self.config.aumentar_velocidad()
         self.stats.nivel += 1
         self.sb.prep_nivel()
 
     def _update_aliens(self):
+        """Actualizar la posición de los aliens."""
         self._check_manada_bordes()
         self.aliens.update()
-
-        #Revisar colisión alien-nave
         if pygame.sprite.spritecollideany(self.nave, self.aliens):
             self._nave_hit()
+        self._check_aliens_bottom()
 
-        #Revisar aliens llegando al final de la pantalla
-        self._check_aliens_bottom() 
-
-    def _crear_manada(self):
-        """Manada de aliens"""
-        #Alien de referencia para medidas, no para incluir en la manada
+    def _crear_flota(self):
+        """Crear una flota completa de aliens."""
         alien = Alien(self)
-        alien_width, alien_height = alien.rect.size 
-        espacio_disponible_x = self.config.screen_width - (2*alien_width)
-        numero_aliens_x = espacio_disponible_x // (2*alien_width)
+        alien_width, alien_height = alien.rect.size
+        espacio_disponible_x = self.config.screen_width - (2 * alien_width)
+        numero_aliens_x = espacio_disponible_x // (2 * alien_width)
 
-        #Determinar el número de filas
         nave_height = self.nave.rect.height
-        espacio_disponible_y = (self.config.screen_height - 
-                                (3*alien_height) - nave_height)
-        numero_filas = espacio_disponible_y // (2*alien_height)
-    
-        #Crear manada
+        espacio_disponible_y = (self.config.screen_height - (3 * alien_height) - nave_height)
+        numero_filas = espacio_disponible_y // (2 * alien_height)
+
         for row_number in range(numero_filas):
             for alien_number in range(numero_aliens_x):
-                #Crear un alien y posicionarlo
                 self._create_alien(alien_number, row_number)
-        
 
     def _create_alien(self, alien_number, row_number):
         alien = Alien(self)
         alien_width, alien_height = alien.rect.size
-
-        #Coordenadas del rectángulo donde se va a posicionar el alien
-        alien.x = alien_width + 2*alien_width*alien_number
+        alien.x = alien_width + 2 * alien_width * alien_number
         alien.rect.x = alien.x
-        alien.rect.y = 10 + alien_height + 2*alien_height*row_number
+        alien.rect.y = 10 + alien_height + 2 * alien_height * row_number
         self.aliens.add(alien)
 
-
     def _create_stars(self):
-        """Crear estrellas de forma aleatoria"""
+        """Crear estrellas posicionadas aleatoriamente en el fondo."""
         x_values = random.sample(range(self.config.screen_width), self.config.cantidad_estrellas)
         y_values = random.sample(range(self.config.screen_height), self.config.cantidad_estrellas)
-
         for i in range(self.config.cantidad_estrellas):
             x = x_values[i]
             y = y_values[i]
@@ -272,60 +253,66 @@ class AlienInvasion():
         self.stars.add(star)
 
     def _check_manada_bordes(self):
+        """Comprobar si algún alien ha alcanzado los bordes de la pantalla y cambiar la dirección."""
         for alien in self.aliens.sprites():
             if alien.check_bordes():
                 self._cambiar_direccion()
                 break
 
     def _cambiar_direccion(self):
-        """Bajar la manada y cambiar la direccion"""
+        """Bajar la flota y cambiar su dirección."""
         for alien in self.aliens.sprites():
             alien.rect.y += self.config.manada_drop_speed
         self.config.manada_direction *= -1
 
     def _nave_hit(self):
-        """Respuesta a colisiones alien-nave"""
+        """Responder al impacto de la nave por un alien."""
         if self.stats.nave_left > 0:
-            #Reproducir sonido
             pygame.mixer.find_channel(True).play(self.nave_hit_sound)
-            #Restar naves restantes:
             self.stats.nave_left -= 1
             self.sb.prep_naves()
-            #Eliminar aliens y balas
             self.aliens.empty()
             self.balas.empty()
-            #Crear nueva manada y centrar la nave
-            self._crear_manada()
+            self.balas_jefe.empty()
+            self._crear_flota()
             self.nave.centrar_nave()
-            #Pausa
             sleep(0.5)
-            
         else:
+            pygame.mixer.find_channel(True).play(self.nave_hit_sound)
             self._end_game()
 
     def _boss_hit(self):
-        """Disminuir vida jefe y actualizar rectángulo"""
+        """Reducir la salud del jefe y comprobar si ha sido derrotado."""
         if self.jefe.salud <= 0:
+            self.stats.puntuacion += 500000
+            self.sb.prep_puntuacion()
+            self.sb.check_mayor_puntuacion()
+            pygame.mixer.music.stop()
+            pygame.mixer.find_channel(True).play(self.victory_sound)
             self._end_game()
         else:
             self.jefe.salud -= self.config.balas_daño
 
+    def _check_jefe_shoot(self):
+        """Comprobar si el jefe debe disparar una bala."""
+        current_time = pygame.time.get_ticks()
+        if current_time - self.last_shot_time > 500:
+            self._disparar_bala("jefe")
+            self.last_shot_time = current_time
 
     def _check_aliens_bottom(self):
-        """Revisar si algún alien llega al final de la pantalla"""
+        """Comprobar si algún alien ha alcanzado la parte inferior de la pantalla."""
         screen_rect = self.screen.get_rect()
         for alien in self.aliens.sprites():
             if alien.rect.bottom >= screen_rect.bottom:
-                #Hacer lo mismo que cuando hay colisión alien-nave:
                 self._nave_hit()
                 break
 
     def _end_game(self):
+        """Terminar el juego y mostrar el cursor del ratón."""
         self.stats.game_active = False
-        #Mouse visible de nuevo
         pygame.mouse.set_visible(True)
 
 if __name__ == '__main__':
-    #Hacer una instancia con la clase y correr el juego con el metodo
     ai = AlienInvasion()
     ai.run_game()

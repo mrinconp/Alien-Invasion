@@ -21,16 +21,16 @@ class Config():
         self.balas_max = 3
         #Balas jefe
         self.bala_jefe_width = 10
-        self.bala_jefe_height = 10
+        self.bala_jefe_height = 30
         self.bala_jefe_color = (255,255,0)
         self.balas_daño = 100
-        self.bala_jefe_speed = 5.0
+        self.bala_jefe_speed = 1.0
 
         #Config estrellas
         self.cantidad_estrellas = 200
 
         #Config sonidos
-        self.volumen_balas = 0.05
+        self.volumen_balas = 0.03
         self.volumen_vidas = 0.5
         self.volumen_level_up = 0.5
 
@@ -40,12 +40,12 @@ class Config():
         self.puntuacion_escala = 1.5
 
         #Config jefe
-        self.nivel_jefe = 1
+        self.nivel_jefe = 11
         self.jefe_speed = 2.0
 
-        self.iniciar_config_dinamicas()
+        self.reset_config()
 
-    def iniciar_config_dinamicas(self):
+    def reset_config(self):
         """Inicializar las configuraciones que cambian a lo largo del juego"""
         self.nave_speed = 1.5
         self.bala_speed = 3.0
